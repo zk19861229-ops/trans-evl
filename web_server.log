@@ -1,0 +1,45 @@
+
+Collecting usage statistics. To deactivate, set browser.gatherUsageStats to false.
+
+2026-01-26 17:55:56.858 Did not auto detect external IP.
+Please go to https://docs.streamlit.io/ for debugging hints.
+
+  You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:8501
+  Network URL: http://192.168.81.244:8501
+
+[nltk_data] Error loading punkt: <urlopen error [Errno 2] No such file
+[nltk_data]     or directory>
+[nltk_data] Error loading wordnet: <urlopen error [Errno 2] No such
+[nltk_data]     file or directory>
+ÎÞ·¨¼ÓÔØspaCyÓ¢ÎÄÄ£ÐÍ£¬Ê¹ÓÃ¼òµ¥·Ö´Ê·½·¨Ìæ´ú: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+ÎÞ·¨¼ÓÔØspaCyÓ¢ÎÄÄ£ÐÍ£¬Ê¹ÓÃ¼òµ¥·Ö´Ê·½·¨Ìæ´ú: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+ÎÞ·¨¼ÓÔØspaCyÓ¢ÎÄÄ£ÐÍ£¬Ê¹ÓÃ¼òµ¥·Ö´Ê·½·¨Ìæ´ú: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+ÎÞ·¨¼ÓÔØspaCyÓ¢ÎÄÄ£ÐÍ£¬Ê¹ÓÃ¼òµ¥·Ö´Ê·½·¨Ìæ´ú: [E050] Can't find model 'en_core_web_sm'. It doesn't seem to be a Python package or a valid path to a data directory.
+ÎÞ·¨Ê¹ÓÃNLTK½øÐÐ¾ä×Ó·Ö¸î£¬Ê¹ÓÃ¼òµ¥·½·¨Ìæ´ú: 
+**********************************************************************
+  Resource [93mpunkt_tab[0m not found.
+  Please use the NLTK Downloader to obtain the resource:
+
+  [31m>>> import nltk
+  >>> nltk.download('punkt_tab')
+  [0m
+  For more information see: https://www.nltk.org/data.html
+
+  Attempted to load [93mtokenizers/punkt_tab/english/[0m
+
+  Searched in:
+    - 'C:\\Users\\Administrator/nltk_data'
+    - 'C:\\Users\\Administrator\\.pyenv\\pyenv-win\\versions\\3.11.4\\nltk_data'
+    - 'C:\\Users\\Administrator\\.pyenv\\pyenv-win\\versions\\3.11.4\\share\\nltk_data'
+    - 'C:\\Users\\Administrator\\.pyenv\\pyenv-win\\versions\\3.11.4\\lib\\nltk_data'
+    - 'C:\\Users\\Administrator\\AppData\\Roaming\\nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+**********************************************************************
+
+ÆÀ¹À½ø¶È:   0%|          | 0/15 [00:00<?, ?it/s]C:\Users\Administrator\.pyenv\pyenv-win\versions\3.11.4\Lib\site-packages\sklearn\feature_extraction\text.py:526: UserWarning: The parameter 'token_pattern' will not be used since 'tokenizer' is not None'
+  warnings.warn(
+ÆÀ¹À½ø¶È: 100%|¨€¨€¨€¨€¨€¨€¨€¨€¨€¨€| 15/15 [00:00<00:00, 441.39it/s]

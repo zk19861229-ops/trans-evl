@@ -1,0 +1,19 @@
+# 小说翻译效果评估工具依赖库
+# 基础库
+numpy>=1.21.0
+pandas>=1.3.0
+scipy>=1.7.0
+# 自然语言处理
+nltk>=3.6.0
+jieba>=0.42.1
+spaCy>=3.2.0
+# 文本相似度
+scikit-learn>=1.0.0
+# 可视化
+matplotlib>=3.4.0
+seaborn>=0.11.0
+# 界面
+streamlit>=1.0.0
+# 其他工具
+tqdm>=4.62.0
+PyYAML>=5.4.0

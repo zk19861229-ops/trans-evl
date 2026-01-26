@@ -1,0 +1,16 @@
+# 小说翻译效果评估工具配置文件
+
+language:
+  source: "zh-CN"       # 源语言 (zh-CN 中文, en 英文, ja 日文, etc.)
+  target: "en"          # 目标语言 (zh 中文, en 英文, ja 日文, etc.)
+
+metrics:
+  bleu: true            # BLEU分数 (机器翻译常用评估指标)
+  meteor: true          # METEOR分数 (考虑词相似度)
+  cosine_similarity: true  # 余弦相似度 (基于TF-IDF的文本相似度)
+  length_ratio: true    # 长度比率 (评估翻译长度一致性)
+
+preprocessing:
+  remove_punctuation: true  # 是否去除标点符号
+  lowercase: false         # 是否转为小写
+  remove_stopwords: false  # 是否去除停用词

@@ -1,0 +1,16 @@
+﻿bleu,meteor,cosine_similarity,length_ratio,overall_score,reference,translation
+0,0.0,0.0,0.35,0.0875,在一个遥远的星球上，有一个叫做“梦幻森林”的地方,"On a distant planet, there is a place called the ""Dream Forest"""
+0,0.0,0.0,0.21978021978021978,0.054945054945054944,那里生长着各种奇花异草，住着许多神奇的生物,"It is home to all kinds of exotic flowers and herbs, and inhabited by many magical creatures"
+0,0.0,0.0,0.2553191489361702,0.06382978723404255,森林的中心有一棵巨大的生命之树，它是整个森林的心脏,"At the center of the forest stands a huge Tree of Life, which is the heart of the entire forest"
+0,0.0,0.0,0.3333333333333333,0.08333333333333333,有一天，森林里来了一位年轻的冒险者,"One day, a young adventurer arrived in the forest"
+0,0.0,0.0,0.24031007751937986,0.060077519379844964,他听说生命之树的果实可以实现任何愿望，所以决定前往森林中心寻找它,"He had heard that the fruit of the Tree of Life could fulfill any wish, so he decided to go to the center of the forest to find it"
+0,0.0,0.0,0.27848101265822783,0.06962025316455696,在路上，他遇到了许多困难和挑战，但他始终没有放弃,"On the way, he encountered many difficulties and challenges, but he never gave up"
+0,0.0,0.0,0.25,0.0625,最终，他成功找到了生命之树,"Finally, he succeeded in finding the Tree of Life"
+0,0.0,0.0,0.23333333333333334,0.058333333333333334,当他伸手去摘果实时，树精出现了,"When he reached out to pick the fruit, a tree spirit appeared"
+0,0.0,0.0,0.26811594202898553,0.06702898550724638,树精告诉他，生命之树的果实并不是随意可以摘取的，只有那些真正需要它的人才能获得,The tree spirit told him that the fruit of the Tree of Life could not be picked arbitrarily; only those who truly needed it could obtain it
+0,0.0,0.0,0.352112676056338,0.0880281690140845,冒险者说出了自己的愿望——他希望能够治愈自己重病的母亲,The adventurer told his wish - he hoped to cure his seriously ill mother
+0,0.0,0.0,0.3,0.075,树精被他的真诚感动了，赐予了他一颗金色的果实,The tree spirit was moved by his sincerity and gave him a golden fruit
+0,0.0,0.0,0.21649484536082475,0.05412371134020619,冒险者带着果实回到了家乡，成功治愈了母亲的病,The adventurer returned to his hometown with the fruit and successfully cured his mother's illness
+0,0.0,0.0,0.27,0.0675,从此，他和母亲过上了幸福的生活，并且经常会回来看望生命之树,"From then on, he and his mother lived a happy life, and they often came back to visit the Tree of Life"
+0,0.0,0.0,0.25675675675675674,0.06418918918918919,这个故事告诉我们，真诚和坚持是成功的关键,This story tells us that sincerity and persistence are the keys to success
+0,0.0,0.0,0.26851851851851855,0.06712962962962964,只要我们有足够的诚意和毅力，就能够克服任何困难，实现自己的愿望,"As long as we have enough sincerity and perseverance, we can overcome any difficulties and achieve our wishes"

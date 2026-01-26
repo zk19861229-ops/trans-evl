@@ -1,0 +1,22 @@
+翻译版本比较结果
+========================================
+参考文件: examples/reference.txt
+
+翻译版本 1: examples/translation1.txt
+------------------------------
+bleu: 0.0000
+meteor: 0.0000
+cosine_similarity: 0.0000
+length_ratio: 0.2728
+overall_score: 0.0682
+total_sentences: 15
+
+翻译版本 2: examples/translation2.txt
+------------------------------
+bleu: 0.0000
+meteor: 0.0000
+cosine_similarity: 0.0000
+length_ratio: 0.2812
+overall_score: 0.0703
+total_sentences: 15
+

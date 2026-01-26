@@ -1,0 +1,8 @@
+翻译效果评估统计结果
+==============================
+bleu: 0.0000
+meteor: 0.0000
+cosine_similarity: 0.0000
+length_ratio: 0.2812
+overall_score: 0.0703
+total_sentences: 15

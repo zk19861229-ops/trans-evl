@@ -1,0 +1,64 @@
+小说翻译效果评估报告
+========================================
+
+1. 评估基本信息
+------------------------------
+源语言: en
+目标语言: en
+评估指标: bleu, meteor, cosine_similarity, length_ratio
+句子数量: 15
+
+2. 整体翻译质量评分
+------------------------------
+bleu                 | 0.7743
+meteor               | 0.9171
+cosine_similarity    | 0.8605
+length_ratio         | 0.9677
+overall_score        | 0.8799
+
+3. 最佳翻译示例
+------------------------------
+原始句子: At the center of the forest stands a huge Tree of Life, which is the heart of the entire forest.
+翻译句子: At the center of the forest stands a huge Tree of Life, which is the heart of the entire forest.
+综合评分: 1.0000
+bleu: 1.0000
+meteor: 0.9999
+cosine_similarity: 1.0000
+length_ratio: 1.0000
+
+4. 最差翻译示例
+------------------------------
+原始句子: There grow all kinds of exotic flowers and plants, and there live many magical creatures.
+翻译句子: It is home to all kinds of exotic flowers and herbs, and inhabited by many magical creatures.
+综合评分: 0.6238
+bleu: 0.3682
+meteor: 0.7063
+cosine_similarity: 0.4646
+length_ratio: 0.9560
+
+5. 统计信息
+------------------------------
+bleu:
+  平均值: 0.7743
+  标准差: 0.2121
+  最小值: 0.3549
+  最大值: 1.0000
+
+meteor:
+  平均值: 0.9171
+  标准差: 0.0994
+  最小值: 0.7063
+  最大值: 0.9999
+
+cosine_similarity:
+  平均值: 0.8605
+  标准差: 0.1668
+  最小值: 0.4646
+  最大值: 1.0000
+
+length_ratio:
+  平均值: 0.9677
+  标准差: 0.0314
+  最小值: 0.8866
+  最大值: 1.0000
+
