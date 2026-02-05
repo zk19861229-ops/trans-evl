@@ -40,6 +40,53 @@ class NovelTranslationEvaluator:
         self._initialize_nlp_models()
         self.translator = GoogleTranslator(source=self.config["language"]["source"], target=self.config["language"]["target"])
 
+        # 加载COMET模型（如果配置中启用了）
+        self.comet_model = None
+        if self.config["metrics"]["comet"]:
+            try:
+                import os
+                import time
+                from comet import download_model, load_from_checkpoint
+
+                model_name = "wmt20-comet-da"
+                # 首先尝试从项目根目录下的 comet_models 文件夹加载模型
+                project_model_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "comet_models", model_name)
+                if os.path.exists(project_model_dir) and os.listdir(project_model_dir):
+                    print("COMET模型已存在（项目目录），直接加载")
+                    checkpoints_folder = os.path.join(project_model_dir, "checkpoints")
+                    checkpoints = [file for file in os.listdir(checkpoints_folder) if file.endswith(".ckpt")]
+                    if checkpoints:
+                        model_path = os.path.join(checkpoints_folder, checkpoints[-1])
+                    else:
+                        raise Exception("COMET模型检查点文件未找到")
+                else:
+                    # 尝试从默认缓存目录加载模型
+                    # COMET库的默认缓存目录是 ~/.cache/torch/unbabel_comet
+                    cache_dir = os.path.join(os.path.expanduser("~"), ".cache", "torch", "unbabel_comet")
+                    model_dir = os.path.join(cache_dir, model_name)
+
+                    if os.path.exists(model_dir) and os.listdir(model_dir):
+                        print("COMET模型已存在（缓存目录），直接加载")
+                        checkpoints_folder = os.path.join(model_dir, "checkpoints")
+                        checkpoints = [file for file in os.listdir(checkpoints_folder) if file.endswith(".ckpt")]
+                        if checkpoints:
+                            model_path = os.path.join(checkpoints_folder, checkpoints[-1])
+                        else:
+                            raise Exception("COMET模型检查点文件未找到")
+                    else:
+                        print("COMET模型未找到，开始下载")
+                        # 设置下载超时时间为60秒
+                        start_time = time.time()
+                        model_path = download_model(model_name)
+                        if time.time() - start_time > 60:
+                            raise Exception("COMET模型下载超时")
+
+                self.comet_model = load_from_checkpoint(model_path)
+                print("COMET模型加载成功")
+            except Exception as e:
+                print(f"COMET模型加载失败: {e}")
+                self.config["metrics"]["comet"] = False
+
     def _load_config(self, config_file: str) -> Dict[str, Any]:
         """加载配置文件"""
         default_config = {
@@ -158,21 +205,53 @@ class NovelTranslationEvaluator:
 
         return min(trans_length / ref_length, ref_length / trans_length)
 
+    def calculate_comet(self, reference: str, translation: str) -> float:
+        """计算COMET分数"""
+        if not self.comet_model:
+            return 0.0
+
+        try:
+            # 如果源语言和目标语言不同，先将参考文本翻译成目标语言
+            translated_ref = reference
+            if self.config["language"]["source"] != self.config["language"]["target"]:
+                translated_ref = self.translator.translate(reference)
+
+            # COMET需要源语言文本、翻译文本和参考文本
+            # 注意：COMET的输入格式要求参考文本是目标语言的
+            data = [{"src": "", "mt": translation, "ref": translated_ref}]
+            scores = self.comet_model.predict(data, batch_size=1)
+
+            # 处理COMET模型返回的Prediction对象
+            if hasattr(scores, 'scores'):
+                score = scores.scores[0]
+            elif hasattr(scores, 'system_score'):
+                score = scores.system_score
+            else:
+                # 兼容性处理：对于其他返回格式
+                score = scores
+
+            return float(score)
+        except Exception as e:
+            print(f"COMET分数计算错误: {e}")
+            return 0.0
+
     def evaluate_sentence(self, reference: str, translation: str) -> Dict[str, float]:
         """评估单个句子的翻译质量"""
         results = {}
+        translated_reference = reference
 
         # 如果源语言和目标语言不同，先将参考文本翻译成目标语言
         if self.config["language"]["source"] != self.config["language"]["target"]:
             try:
-                reference = self.translator.translate(reference)
-                print(f"翻译后的参考文本: {reference}")
+                translated_reference = self.translator.translate(reference)
+                print(f"翻译后的参考文本: {translated_reference}")
             except Exception as e:
                 print(f"翻译参考文本时出错: {e}")
-                return {"bleu": 0.0, "meteor": 0.0, "cosine_similarity": 0.0, "length_ratio": 0.0, "overall_score": 0.0}
+                # 翻译失败时，直接使用原始参考文本进行评估（可能不准确，但总比放弃好）
+                translated_reference = reference
 
         # 预处理文本，使用目标语言的预处理方法
-        processed_reference = self._preprocess_text(reference, self.config["language"]["target"])
+        processed_reference = self._preprocess_text(translated_reference, self.config["language"]["target"])
         processed_translation = self._preprocess_text(translation, self.config["language"]["target"])
 
         if self.config["metrics"]["bleu"]:
@@ -186,6 +265,9 @@ class NovelTranslationEvaluator:
 
         if self.config["metrics"]["length_ratio"]:
             results["length_ratio"] = self.calculate_length_ratio(processed_reference, processed_translation)
+
+        if self.config["metrics"]["comet"]:
+            results["comet"] = self.calculate_comet(translated_reference, translation)
 
         # 计算综合评分
         results["overall_score"] = np.mean(list(results.values()))
@@ -333,6 +415,7 @@ class NovelTranslationEvaluator:
                 "meteor": result["scores"]["meteor"],
                 "cosine_similarity": result["scores"]["cosine_similarity"],
                 "length_ratio": result["scores"]["length_ratio"],
+                "comet": result["scores"]["comet"],
                 "total_sentences": result["scores"]["total_sentences"]
             }
             summary_data.append(row)
@@ -374,6 +457,7 @@ class NovelTranslationEvaluator:
                 'bleu': sent_result['bleu'],
                 'meteor': sent_result['meteor'],
                 'cosine_similarity': sent_result['cosine_similarity'],
+                'comet': sent_result['comet'],
                 'overall_score': sent_result['overall_score']
             })
 

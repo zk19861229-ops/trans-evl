@@ -9,6 +9,7 @@ metrics:
   meteor: true          # METEOR分数 (考虑词相似度)
   cosine_similarity: true  # 余弦相似度 (基于TF-IDF的文本相似度)
   length_ratio: true    # 长度比率 (评估翻译长度一致性)
+  comet: true           # COMET分数 (基于预训练模型的评估指标)
 
 preprocessing:
   remove_punctuation: true  # 是否去除标点符号

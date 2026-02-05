@@ -62,12 +62,13 @@ if st.button("开始评估", key="evaluate_btn"):
 
             # 整体评分
             st.subheader("📊 整体翻译质量评分")
-            col1, col2, col3, col4, col5 = st.columns(5)
+            col1, col2, col3, col4, col5, col6 = st.columns(6)
             col1.metric("综合评分", f"{results['overall_score']:.4f}")
             col2.metric("BLEU分数", f"{results['bleu']:.4f}")
             col3.metric("METEOR分数", f"{results['meteor']:.4f}")
             col4.metric("余弦相似度", f"{results['cosine_similarity']:.4f}")
             col5.metric("长度比率", f"{results['length_ratio']:.4f}")
+            col6.metric("COMET分数", f"{results['comet']:.4f}")
 
             # 句子级结果
             st.subheader("📄 句子级评估结果")
@@ -80,7 +81,8 @@ if st.button("开始评估", key="evaluate_btn"):
                         "BLEU": f"{r['bleu']:.4f}",
                         "METEOR": f"{r['meteor']:.4f}",
                         "余弦相似度": f"{r['cosine_similarity']:.4f}",
-                        "长度比率": f"{r['length_ratio']:.4f}"
+                        "长度比率": f"{r['length_ratio']:.4f}",
+                        "COMET": f"{r['comet']:.4f}"
                     }
                     for r in results['sentence_level_results']
                 ]

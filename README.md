@@ -29,6 +29,7 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple deep-translator
 ### 下载语言模型
 ```bash
 python -m spacy download en_core_web_sm
+预训练语言模型文件： ~\.cache\torch\unbabel_comet\
 ```
 
 ## 使用方法
@@ -52,7 +53,7 @@ python app.py analyze-length examples/reference.txt examples/translation1.txt -o
 
 #### 启动Web界面
 ```bash
-python app.py web
+streamlit run web_app.py
 ```
 
 ### 2. 配置文件
@@ -78,7 +79,7 @@ preprocessing:
 
 1. 启动Web服务：
    ```bash
-   python app.py web
+   streamlit run web_app.py
    ```
 
 2. 在浏览器中访问显示的地址（通常是 `http://localhost:8501`）
