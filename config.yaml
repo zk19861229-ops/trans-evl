@@ -10,6 +10,13 @@ metrics:
   cosine_similarity: true  # 余弦相似度 (基于TF-IDF的文本相似度)
   length_ratio: true    # 长度比率 (评估翻译长度一致性)
   comet: true           # COMET分数 (基于预训练模型的评估指标)
+  thresholds:
+    bleu: 0.4           # BLEU分数阈值
+    meteor: 0.6         # METEOR分数阈值
+    cosine_similarity: 0.6  # 余弦相似度阈值
+    length_ratio: 0.7   # 长度比率阈值
+    comet: 0.7          # COMET分数阈值
+    overall: 0.6        # 综合评分阈值
 
 preprocessing:
   remove_punctuation: true  # 是否去除标点符号

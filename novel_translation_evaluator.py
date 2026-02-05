@@ -98,7 +98,15 @@ class NovelTranslationEvaluator:
                 "bleu": True,
                 "meteor": True,
                 "cosine_similarity": True,
-                "length_ratio": True
+                "length_ratio": True,
+                "thresholds": {
+                    "bleu": 0.4,
+                    "meteor": 0.6,
+                    "cosine_similarity": 0.6,
+                    "length_ratio": 0.7,
+                    "comet": 0.7,
+                    "overall": 0.6
+                }
             },
             "preprocessing": {
                 "remove_punctuation": True,
@@ -463,6 +471,94 @@ class NovelTranslationEvaluator:
 
         pd.DataFrame(analysis_data).to_csv(output_file, index=False, encoding='utf-8-sig')
         print(f"句子长度分析结果已保存到: {output_file}")
+
+    def generate_translation_suggestions(self, reference_text: str, translation_text: str, thresholds: Dict[str, float] = None) -> List[Dict[str, Any]]:
+        """
+        为翻译质量较低的句子生成修改建议
+
+        Args:
+            reference_text: 源语言参考文本
+            translation_text: 目标语言翻译文本
+            thresholds: 各指标的阈值配置（可选，默认使用config.yaml中的配置）
+
+        Returns:
+            包含每个低质量句子信息和建议的列表
+        """
+        suggestions = []
+
+        # 使用配置文件中的阈值，如果没有提供自定义阈值
+        if thresholds is None:
+            thresholds = self.config['metrics']['thresholds']
+
+        # 评估文本
+        results = self.evaluate_texts(reference_text, translation_text)
+
+        # 遍历句子级结果，找到低分句子
+        for sent_result in results['sentence_level_results']:
+            # 检查是否有任何指标低于阈值
+            has_low_score = False
+            for metric, threshold in thresholds.items():
+                if metric in sent_result and sent_result[metric] < threshold:
+                    has_low_score = True
+                    break
+
+            if has_low_score:
+                suggestion = {
+                    "reference": sent_result['reference'],
+                    "translation": sent_result['translation'],
+                    "overall_score": sent_result['overall_score'],
+                    "metrics": {},
+                    "suggestion": "",
+                    "reasons": []
+                }
+
+                # 复制各指标分数
+                for metric in self.config['metrics']:
+                    if metric in sent_result:
+                        suggestion['metrics'][metric] = sent_result[metric]
+
+                # 生成翻译建议
+                try:
+                    # 使用Google翻译作为参考
+                    google_translation = self.translator.translate(sent_result['reference'])
+                    suggestion['suggestion'] = google_translation
+
+                    # 分析差异并生成理由
+                    reasons = []
+
+                    # 检查BLEU分数
+                    if 'bleu' in suggestion['metrics'] and suggestion['metrics']['bleu'] < thresholds['bleu']:
+                        reasons.append(f"BLEU分数较低({suggestion['metrics']['bleu']:.2f} < {thresholds['bleu']:.2f})，表明翻译与参考文本的匹配度较差")
+
+                    # 检查余弦相似度
+                    if 'cosine_similarity' in suggestion['metrics'] and suggestion['metrics']['cosine_similarity'] < thresholds['cosine_similarity']:
+                        reasons.append(f"余弦相似度较低({suggestion['metrics']['cosine_similarity']:.2f} < {thresholds['cosine_similarity']:.2f})，表明翻译文本与参考文本的语义相似性不高")
+
+                    # 检查长度比率
+                    if 'length_ratio' in suggestion['metrics'] and suggestion['metrics']['length_ratio'] < thresholds['length_ratio']:
+                        reasons.append(f"翻译长度与参考文本差异较大({suggestion['metrics']['length_ratio']:.2f} < {thresholds['length_ratio']:.2f})")
+
+                    # 检查METEOR分数
+                    if 'meteor' in suggestion['metrics'] and suggestion['metrics']['meteor'] < thresholds['meteor']:
+                        reasons.append(f"METEOR分数较低({suggestion['metrics']['meteor']:.2f} < {thresholds['meteor']:.2f})，表明翻译在词匹配和语义方面存在问题")
+
+                    # 检查COMET分数
+                    if 'comet' in suggestion['metrics'] and suggestion['metrics']['comet'] < thresholds['comet']:
+                        reasons.append(f"COMET分数较低({suggestion['metrics']['comet']:.2f} < {thresholds['comet']:.2f})，表明翻译质量不符合标准")
+
+                    # 检查综合评分
+                    if 'overall_score' in suggestion and suggestion['overall_score'] < thresholds['overall']:
+                        reasons.append(f"综合评分较低({suggestion['overall_score']:.2f} < {thresholds['overall']:.2f})，表明翻译质量整体不符合要求")
+
+                    suggestion['reasons'] = reasons
+
+                except Exception as e:
+                    suggestion['suggestion'] = "无法生成翻译建议"
+                    suggestion['reasons'] = [f"生成建议时出错: {e}"]
+
+                suggestions.append(suggestion)
+
+        return suggestions
 
     def generate_report(self, results: Dict[str, Any], report_file: str = "translation_report.txt"):
         """生成详细的评估报告"""

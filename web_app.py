@@ -32,6 +32,68 @@ if config_file:
 else:
     evaluator = NovelTranslationEvaluator()
 
+# 阈值配置区域
+st.sidebar.header("🎯 阈值配置")
+st.sidebar.markdown("设置各个评估指标的阈值，低于阈值的句子将被标记为需要改进")
+
+# 获取当前配置的阈值
+default_thresholds = evaluator.config['metrics']['thresholds']
+
+# 创建阈值滑块
+thresholds = {}
+thresholds['bleu'] = st.sidebar.slider("BLEU分数阈值", 0.0, 1.0, default_thresholds.get('bleu', 0.4), 0.05)
+thresholds['meteor'] = st.sidebar.slider("METEOR分数阈值", 0.0, 1.0, default_thresholds.get('meteor', 0.6), 0.05)
+thresholds['cosine_similarity'] = st.sidebar.slider("余弦相似度阈值", 0.0, 1.0, default_thresholds.get('cosine_similarity', 0.6), 0.05)
+thresholds['length_ratio'] = st.sidebar.slider("长度比率阈值", 0.0, 1.0, default_thresholds.get('length_ratio', 0.7), 0.05)
+thresholds['comet'] = st.sidebar.slider("COMET分数阈值", 0.0, 1.0, default_thresholds.get('comet', 0.7), 0.05)
+thresholds['overall'] = st.sidebar.slider("综合评分阈值", 0.0, 1.0, default_thresholds.get('overall', 0.6), 0.05)
+
+# 打分标准说明区域
+st.sidebar.header("📊 打分标准说明")
+st.sidebar.markdown("""
+### BLEU分数
+- **0.0 - 0.2**: 非常差，翻译与参考文本几乎不匹配
+- **0.2 - 0.4**: 较差，匹配度低，存在大量错误
+- **0.4 - 0.6**: 一般，基本匹配，但有一些错误
+- **0.6 - 0.8**: 良好，匹配度高，翻译质量较好
+- **0.8 - 1.0**: 优秀，翻译与参考文本高度匹配
+
+### METEOR分数
+- **0.0 - 0.4**: 非常差，词汇和语义匹配度低
+- **0.4 - 0.6**: 较差，有一些匹配，但整体质量不高
+- **0.6 - 0.7**: 一般，词汇和语义匹配度中等
+- **0.7 - 0.8**: 良好，词汇和语义匹配度高
+- **0.8 - 1.0**: 优秀，词汇和语义高度匹配
+
+### 余弦相似度
+- **0.0 - 0.5**: 非常差，语义相似度极低
+- **0.5 - 0.6**: 较差，语义相似度较低
+- **0.6 - 0.7**: 一般，语义相似度中等
+- **0.7 - 0.8**: 良好，语义相似度高
+- **0.8 - 1.0**: 优秀，语义高度相似
+
+### 长度比率
+- **0.0 - 0.6**: 非常差，翻译长度与参考文本差异过大
+- **0.6 - 0.7**: 较差，长度差异较大
+- **0.7 - 0.8**: 一般，长度差异适中
+- **0.8 - 0.9**: 良好，长度差异较小
+- **0.9 - 1.0**: 优秀，翻译长度与参考文本高度一致
+
+### COMET分数
+- **0.0 - 0.5**: 非常差，翻译质量严重不符合要求
+- **0.5 - 0.6**: 较差，翻译质量较低
+- **0.6 - 0.7**: 一般，翻译质量中等
+- **0.7 - 0.8**: 良好，翻译质量较高
+- **0.8 - 1.0**: 优秀，翻译质量非常高
+
+### 综合评分
+- **0.0 - 0.5**: 非常差，整体翻译质量严重不符合要求
+- **0.5 - 0.6**: 较差，整体翻译质量较低
+- **0.6 - 0.7**: 一般，整体翻译质量中等
+- **0.7 - 0.8**: 良好，整体翻译质量较高
+- **0.8 - 1.0**: 优秀，整体翻译质量非常高
+""")
+
 # 评估区域
 st.header("📝 评估翻译质量")
 
@@ -106,6 +168,29 @@ if st.button("开始评估", key="evaluate_btn"):
                 st.write(f"**原始句子:** {worst_sent['reference']}")
                 st.write(f"**翻译句子:** {worst_sent['translation']}")
                 st.write(f"**综合评分:** {worst_sent['overall_score']:.4f}")
+
+            # 翻译修改建议
+            st.subheader("📝 翻译修改建议")
+            suggestions = evaluator.generate_translation_suggestions(reference_text, translation_text, thresholds)
+            if suggestions:
+                for i, suggestion in enumerate(suggestions, 1):
+                    with st.expander(f"句子 {i}: 综合评分 {suggestion['overall_score']:.4f}"):
+                        st.write(f"**原始句子:** {suggestion['reference']}")
+                        st.write(f"**当前翻译:** {suggestion['translation']}")
+                        st.write(f"**建议翻译:** {suggestion['suggestion']}")
+
+                        # 显示问题原因
+                        if suggestion['reasons']:
+                            st.write("**问题原因:**")
+                            for reason in suggestion['reasons']:
+                                st.write(f"- {reason}")
+
+                        # 显示详细指标
+                        st.markdown("**详细评分:**")
+                        for metric, value in suggestion['metrics'].items():
+                            st.write(f"- {metric}: {value:.4f}")
+            else:
+                st.success("所有句子的翻译质量都符合要求")
 
             # 保存结果
             csv_data = evaluator._save_results(results, "temp_results.csv")
